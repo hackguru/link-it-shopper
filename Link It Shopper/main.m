@@ -1,9 +1,9 @@
 //
 //  main.m
-//  Link It Shopper
+//  Link It Merchant
 //
-//  Created by Sina Rezaimehr on 2/16/15.
-//  Copyright (c) 2015 Sina Rezaimehr. All rights reserved.
+//  Created by Edward Rezaimehr on 2/4/15.
+//  Copyright (c) 2015 Edward Rezaimehr. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>

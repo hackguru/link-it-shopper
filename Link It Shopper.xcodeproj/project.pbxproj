@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		24A61485C94E7F8C8557DA9C /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 49956122C19EBF7FDC2A4EBF /* libPods.a */; };
 		2D8052E71A91E6CE0073374F /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D8052E61A91E6CE0073374F /* main.m */; };
 		2D8052EA1A91E6CE0073374F /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D8052E91A91E6CE0073374F /* AppDelegate.m */; };
 		2D8052ED1A91E6CE0073374F /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D8052EC1A91E6CE0073374F /* ViewController.m */; };
@@ -14,6 +15,10 @@
 		2D8052F21A91E6CE0073374F /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2D8052F11A91E6CE0073374F /* Images.xcassets */; };
 		2D8052F51A91E6CE0073374F /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 2D8052F31A91E6CE0073374F /* LaunchScreen.xib */; };
 		2D8053011A91E6CF0073374F /* Link_It_ShopperTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D8053001A91E6CF0073374F /* Link_It_ShopperTests.m */; };
+		2D80530D1A91EA9D0073374F /* NSData+Conversion.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80530C1A91EA9D0073374F /* NSData+Conversion.m */; };
+		2D8053141A91EAB10073374F /* BrowserController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D80530F1A91EAB10073374F /* BrowserController.m */; };
+		2D8053151A91EAB10073374F /* ListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D8053111A91EAB10073374F /* ListItem.m */; };
+		2D8053161A91EAB10073374F /* SignupController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D8053131A91EAB10073374F /* SignupController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +45,17 @@
 		2D8052FA1A91E6CF0073374F /* Link It ShopperTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Link It ShopperTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D8052FF1A91E6CF0073374F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2D8053001A91E6CF0073374F /* Link_It_ShopperTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = Link_It_ShopperTests.m; sourceTree = "<group>"; };
+		2D80530B1A91EA9D0073374F /* NSData+Conversion.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+Conversion.h"; sourceTree = "<group>"; };
+		2D80530C1A91EA9D0073374F /* NSData+Conversion.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+Conversion.m"; sourceTree = "<group>"; };
+		2D80530E1A91EAB10073374F /* BrowserController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrowserController.h; sourceTree = "<group>"; };
+		2D80530F1A91EAB10073374F /* BrowserController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrowserController.m; sourceTree = "<group>"; };
+		2D8053101A91EAB10073374F /* ListItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ListItem.h; sourceTree = "<group>"; };
+		2D8053111A91EAB10073374F /* ListItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ListItem.m; sourceTree = "<group>"; };
+		2D8053121A91EAB10073374F /* SignupController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SignupController.h; sourceTree = "<group>"; };
+		2D8053131A91EAB10073374F /* SignupController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SignupController.m; sourceTree = "<group>"; };
+		4555219178D677A0A2CC6DD5 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
+		49956122C19EBF7FDC2A4EBF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		51EB95ED9BDFFBB97AF0633C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -47,6 +63,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				24A61485C94E7F8C8557DA9C /* libPods.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -66,6 +83,8 @@
 				2D8052E31A91E6CE0073374F /* Link It Shopper */,
 				2D8052FD1A91E6CF0073374F /* Link It ShopperTests */,
 				2D8052E21A91E6CE0073374F /* Products */,
+				5A6934C741B12371886633AE /* Pods */,
+				C74BB5E90CB698343B9336C5 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,6 +100,13 @@
 		2D8052E31A91E6CE0073374F /* Link It Shopper */ = {
 			isa = PBXGroup;
 			children = (
+				2D80530E1A91EAB10073374F /* BrowserController.h */,
+				2D80530F1A91EAB10073374F /* BrowserController.m */,
+				2D8053101A91EAB10073374F /* ListItem.h */,
+				2D8053111A91EAB10073374F /* ListItem.m */,
+				2D8053121A91EAB10073374F /* SignupController.h */,
+				2D8053131A91EAB10073374F /* SignupController.m */,
+				2D80530A1A91EA820073374F /* toolsAndExtensions */,
 				2D8052E81A91E6CE0073374F /* AppDelegate.h */,
 				2D8052E91A91E6CE0073374F /* AppDelegate.m */,
 				2D8052EB1A91E6CE0073374F /* ViewController.h */,
@@ -119,6 +145,32 @@
 			name = "Supporting Files";
 			sourceTree = "<group>";
 		};
+		2D80530A1A91EA820073374F /* toolsAndExtensions */ = {
+			isa = PBXGroup;
+			children = (
+				2D80530B1A91EA9D0073374F /* NSData+Conversion.h */,
+				2D80530C1A91EA9D0073374F /* NSData+Conversion.m */,
+			);
+			name = toolsAndExtensions;
+			sourceTree = "<group>";
+		};
+		5A6934C741B12371886633AE /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				51EB95ED9BDFFBB97AF0633C /* Pods.debug.xcconfig */,
+				4555219178D677A0A2CC6DD5 /* Pods.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+		C74BB5E90CB698343B9336C5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				49956122C19EBF7FDC2A4EBF /* libPods.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -126,9 +178,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2D8053041A91E6CF0073374F /* Build configuration list for PBXNativeTarget "Link It Shopper" */;
 			buildPhases = (
+				020FA71659DC21A07A8E7C15 /* Check Pods Manifest.lock */,
 				2D8052DD1A91E6CE0073374F /* Sources */,
 				2D8052DE1A91E6CE0073374F /* Frameworks */,
 				2D8052DF1A91E6CE0073374F /* Resources */,
+				8F27FD29D429A991BE47B8C6 /* Copy Pods Resources */,
 			);
 			buildRules = (
 			);
@@ -214,13 +268,50 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		020FA71659DC21A07A8E7C15 /* Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Check Pods Manifest.lock";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [[ $? != 0 ]] ; then\n    cat << EOM\nerror: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\nEOM\n    exit 1\nfi\n";
+			showEnvVarsInLog = 0;
+		};
+		8F27FD29D429A991BE47B8C6 /* Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			name = "Copy Pods Resources";
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods/Pods-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		2D8052DD1A91E6CE0073374F /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 				2D8052ED1A91E6CE0073374F /* ViewController.m in Sources */,
+				2D8053141A91EAB10073374F /* BrowserController.m in Sources */,
+				2D8053161A91EAB10073374F /* SignupController.m in Sources */,
+				2D8053151A91EAB10073374F /* ListItem.m in Sources */,
 				2D8052EA1A91E6CE0073374F /* AppDelegate.m in Sources */,
+				2D80530D1A91EA9D0073374F /* NSData+Conversion.m in Sources */,
 				2D8052E71A91E6CE0073374F /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -343,6 +434,7 @@
 		};
 		2D8053051A91E6CF0073374F /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 51EB95ED9BDFFBB97AF0633C /* Pods.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "Link It Shopper/Info.plist";
@@ -353,6 +445,7 @@
 		};
 		2D8053061A91E6CF0073374F /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 4555219178D677A0A2CC6DD5 /* Pods.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = "Link It Shopper/Info.plist";
@@ -414,6 +507,7 @@
 				2D8053061A91E6CF0073374F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		2D8053071A91E6CF0073374F /* Build configuration list for PBXNativeTarget "Link It ShopperTests" */ = {
 			isa = XCConfigurationList;
@@ -422,6 +516,7 @@
 				2D8053091A91E6CF0073374F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
