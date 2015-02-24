@@ -13,8 +13,11 @@
 #import "BrowserController.h"
 #import "SignupController.h"
 #import "AppDelegate.h"
+#import "MerchantListItem.h"
 
-#define kLikedItemsUrl @"http://ec2-54-149-40-205.us-west-2.compute.amazonaws.com/users/%@/likedMedias"
+#define kLikedItemsUrl @"http://api.linkmy.photos/users/%@/likedMedias"
+#define kRecommendedMerchantsUrl @"http://api.linkmy.photos/users/%@/recommendedMerchants"
+#define kOpenedLinksUrl @"http://api.linkmy.photos/users/%@/opened/%@"
 NSString * USER_ID_KEY=@"userIdKey";
 
 
@@ -24,6 +27,7 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 @implementation ViewController{
     NSMutableArray *items;
+    NSMutableArray *recommendedMerchants;
     NSURLConnection *currentConnection;
     NSMutableData *apiReturnData;
     BOOL _draggingView;
@@ -118,24 +122,28 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 - (void)viewWillTransitionToSize:(CGSize)size withTransitionCoordinator:(id<UIViewControllerTransitionCoordinator>)coordinator {
     
-    // willRotateToInterfaceOrientation code goes here
-    NSArray *indexes = [self.tableView indexPathsForVisibleRows];
-    int index = floor(indexes.count / 2);
-    NSIndexPath *currentIndexInTable = indexes[index];
-    
-    [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        // willAnimateRotationToInterfaceOrientation code goes here
+    if(items!= nil && items.count>0){
+        // willRotateToInterfaceOrientation code goes here
+        NSArray *indexes = [self.tableView indexPathsForVisibleRows];
+        int index = floor(indexes.count / 2);
+        NSIndexPath *currentIndexInTable = indexes[index];
+        
+        [coordinator animateAlongsideTransition:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+            // willAnimateRotationToInterfaceOrientation code goes here
+            [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
+        } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
+            // didRotateFromInterfaceOrientation goes here (nothing for now)
+            CGFloat tableHeight = self.tableView.frame.size.height;
+            CGFloat cellHeight = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:currentIndexInTable];
+            int cellNumberToGoToInViewRect = floor(tableHeight / cellHeight / 2);
+            int cellToGoInTable = currentIndexInTable.row - cellNumberToGoToInViewRect;
+            [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:cellToGoInTable
+                                                                      inSection:currentIndexInTable.section]
+                                  atScrollPosition:UITableViewScrollPositionTop animated:YES];
+        }];
+    } else {
         [super viewWillTransitionToSize:size withTransitionCoordinator:coordinator];
-    } completion:^(id<UIViewControllerTransitionCoordinatorContext> context) {
-        // didRotateFromInterfaceOrientation goes here (nothing for now)
-        CGFloat tableHeight = self.tableView.frame.size.height;
-        CGFloat cellHeight = [self tableView:self.tableView estimatedHeightForRowAtIndexPath:currentIndexInTable];
-        int cellNumberToGoToInViewRect = floor(tableHeight / cellHeight / 2);
-        int cellToGoInTable = currentIndexInTable.row - cellNumberToGoToInViewRect;
-        [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForRow:cellToGoInTable
-                                                              inSection:currentIndexInTable.section]
-                          atScrollPosition:UITableViewScrollPositionTop animated:YES];
-    }];
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated{
@@ -227,6 +235,8 @@ NSString * USER_ID_KEY=@"userIdKey";
     // Return the number of rows in the section.
     if(items.count>0){
         return items.count;
+    } else if (recommendedMerchants.count>0){
+        return recommendedMerchants.count + 1;
     }
     return 1;
 }
@@ -257,7 +267,17 @@ NSString * USER_ID_KEY=@"userIdKey";
         
         return cell;
     }
-    return [tableView dequeueReusableCellWithIdentifier:@"emptyTable" forIndexPath:indexPath];
+    if(index == 0) {
+        return [tableView dequeueReusableCellWithIdentifier:@"emptyTable" forIndexPath:indexPath];
+    }
+    NSString *identifier = @"recommended-merchant";
+    NSDictionary *item = [recommendedMerchants objectAtIndex:index-1];
+    MerchantListItem *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
+    [cell.profileImage sd_setImageWithURL:[NSURL URLWithString:[item valueForKey:@"profilePicture"]] placeholderImage:[UIImage imageNamed:@"loading"]];
+    [cell.descriptionLabel setText:[item valueForKey:@"bio"]];
+    [cell.userName setText:[item valueForKey:@"username"]];
+    return cell;
+    
 }
 -(UIView *) tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
     static NSString *CellIdentifier = @"loadingCell";
@@ -280,7 +300,7 @@ NSString * USER_ID_KEY=@"userIdKey";
         }
         return screenWidth/2 + 54;
     }
-    return 300;
+    return 100;
 }
 
 -(void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath
@@ -302,6 +322,16 @@ NSString * USER_ID_KEY=@"userIdKey";
     
     if(items.count > 0 && indexPath.row == 0){
         ((ListItem *)cell).topMargin.constant = 0;
+    }
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(recommendedMerchants!=nil){
+        int index = indexPath.row - 1;
+        NSString *username = recommendedMerchants[index][@"username"];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://instagram.com/%@",username]]];
+        [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
 
@@ -356,6 +386,24 @@ NSString * USER_ID_KEY=@"userIdKey";
         [browser setLink:link];
         [browser setImageId:imageId];
         [browser setInstaImageUrl:instaImageUrl];
+        
+        //sending analyitics
+        NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+        NSString *urlString = [NSString stringWithFormat:kOpenedLinksUrl,[defaults valueForKey:USER_ID_KEY],imageId];
+        NSURL *restURL = [NSURL URLWithString:urlString];
+        NSMutableURLRequest *restRequest = [NSMutableURLRequest requestWithURL:restURL];
+        [restRequest setHTTPMethod:@"POST"];
+        [restRequest setValue: @"application/json" forHTTPHeaderField: @"Accept"];
+        [restRequest setValue: @"application/json; charset=utf-8" forHTTPHeaderField: @"content-type"];
+        [restRequest setValue: [defaults valueForKey:NOTIFICATION_TOKEN_KEY.copy] forHTTPHeaderField:@"token"];
+        [restRequest setValue: @"ios" forHTTPHeaderField: @"device"];
+        [restRequest setValue: @"buyer" forHTTPHeaderField: @"userType"];
+        
+        [NSURLConnection sendAsynchronousRequest:restRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+            //TODO: what to do?
+            return;
+        }];
+        
     }
 }
 
@@ -403,6 +451,7 @@ NSString * USER_ID_KEY=@"userIdKey";
                 return;
             }];
             
+            items = nil;
             
             break;
     }
@@ -442,6 +491,9 @@ NSString * USER_ID_KEY=@"userIdKey";
     if(items == nil){
         items = newItems.mutableCopy;
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+        if((items == nil || items.count == 0)){
+            [self populateRecommendedMerchants];
+        }
         return;
     }
     for(int i=0; i<newItems.count; i++){
@@ -472,6 +524,40 @@ NSString * USER_ID_KEY=@"userIdKey";
         //TODO Move to the browser
         [self.tableView scrollsToTop];
         [self performSegueWithIdentifier:@"showProductLink" sender:self];
+    }
+}
+
+- (void)populateRecommendedMerchants{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    NSString *currentUserId = [defaults stringForKey:USER_ID_KEY];
+    
+    if(currentUserId != nil){
+
+        NSURL *restURL = [NSURL URLWithString:[NSString stringWithFormat:kRecommendedMerchantsUrl, currentUserId]];
+        NSMutableURLRequest *restRequest = [NSMutableURLRequest requestWithURL:restURL];
+        [restRequest setHTTPMethod:@"GET"];
+        [restRequest setValue: @"application/json" forHTTPHeaderField: @"Accept"];
+        [restRequest setValue: @"application/json; charset=utf-8" forHTTPHeaderField: @"content-type"];
+        [restRequest setValue: [defaults valueForKey:NOTIFICATION_TOKEN_KEY.copy] forHTTPHeaderField:@"token"];
+        [restRequest setValue: @"ios" forHTTPHeaderField: @"device"];
+        [restRequest setValue: @"buyer" forHTTPHeaderField: @"userType"];
+        
+        [NSURLConnection sendAsynchronousRequest:restRequest queue:[NSOperationQueue mainQueue] completionHandler:^(NSURLResponse *response, NSData *data, NSError *connectionError) {
+            if(connectionError==nil){
+                NSError *error;
+                NSMutableDictionary *returnedDict = [NSJSONSerialization JSONObjectWithData:data options:kNilOptions error:&error];
+                
+                if (error != nil) {
+                    NSLog(@"%@", [error localizedDescription]);
+                } else {
+                    recommendedMerchants = ((NSArray *)[returnedDict objectForKey:@"results"]).mutableCopy;
+                    [self.tableView reloadData];
+                }
+            }
+            return;
+        }];
+        
     }
 }
 

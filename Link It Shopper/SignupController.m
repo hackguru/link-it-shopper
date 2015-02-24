@@ -10,9 +10,9 @@
 #import "AppDelegate.h"
 #import "ViewController.h"
 
-#define signupUrlUrl @"http://ec2-54-149-40-205.us-west-2.compute.amazonaws.com/users/auth/buyer/ios/%@"
-#define getUserIdUrl @"http://ec2-54-149-40-205.us-west-2.compute.amazonaws.com/users/userId"
-#define buyerLoggedInUrl @"http://ec2-54-149-40-205.us-west-2.compute.amazonaws.com/users/insta-buyer-cb"
+#define signupUrlUrl @"http://api.linkmy.photos/users/auth/buyer/ios/%@"
+#define getUserIdUrl @"http://api.linkmy.photos/users/userId"
+#define buyerLoggedInUrl @"http://api.linkmy.photos/users/insta-buyer-cb"
 
 @interface SignupController ()
 
@@ -20,9 +20,15 @@
 
 @implementation SignupController{
     NSString *currentNotificationToken;
+    NSTimer *progressBarTimer;
+    bool isDoneLoadingAPage;
 }
 
 @synthesize webView = _webView;
+@synthesize player= _player;
+@synthesize progressBar = _progressBar;
+@synthesize retryButton = _retryButton;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -41,7 +47,7 @@
                                                    options:NSKeyValueObservingOptionNew
                                                    context:NULL];
     }
-
+    self.progressBar.hidden = YES;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -64,6 +70,12 @@
 #pragma mark - UIWebViewDelegate
 - (BOOL)webView:(UIWebView *)webView shouldStartLoadWithRequest:(NSURLRequest *)request navigationType:(UIWebViewNavigationType)navigationType
 {
+    if(self.progressBar.hidden){
+        self.progressBar.hidden = false;
+        self.progressBar.progress = 0;
+        isDoneLoadingAPage = false;
+        progressBarTimer = [NSTimer scheduledTimerWithTimeInterval:0.03 target:self selector:@selector(timerCallback) userInfo:nil repeats:YES];
+    }
     return YES;
 }
 
@@ -106,6 +118,7 @@
         }];
         
     }
+    isDoneLoadingAPage = true;
 }
 
 
@@ -134,7 +147,51 @@
 
 - (void)webView:(UIWebView *)webView didFailLoadWithError:(NSError *)error
 {
-    //TODO: what if sign in fails??
+    isDoneLoadingAPage = true;
+}
+
+
+- (IBAction)playMovie:(id)sender{
+    NSBundle *bundle = [NSBundle mainBundle];
+    NSString *moviePath = [bundle pathForResource:@"finalLinkitTeaser-lowres" ofType:@"mp4"];
+    NSURL *movieURL = [NSURL fileURLWithPath:moviePath];
+
+    self.player = [[MPMoviePlayerController alloc] initWithContentURL:movieURL];
+    self.player.controlStyle = MPMovieControlStyleDefault;
+    self.player.shouldAutoplay = YES;
+    
+    [self.view addSubview:self.player.view];
+    [self.player setFullscreen:YES animated:YES];
+    
+}
+
+-(void)timerCallback {
+    if (isDoneLoadingAPage) {
+        if (self.progressBar.progress >= 1) {
+            self.progressBar.hidden = true;
+            [progressBarTimer invalidate];
+        }
+        else {
+            self.progressBar.progress += 0.1;
+        }
+    }
+    else {
+        self.progressBar.progress += 0.005;
+        if (self.progressBar.progress >= 0.95) {
+            self.progressBar.progress = 0.95;
+        }
+    }
+}
+
+- (IBAction)reload:(id)sender{
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    
+    // Get the results out
+    currentNotificationToken = [defaults stringForKey:NOTIFICATION_TOKEN_KEY.copy];
+    
+    if(currentNotificationToken != nil){
+        [self loadRequestFromString: [NSString stringWithFormat:signupUrlUrl, currentNotificationToken]];
+    }
 }
 
 @end
