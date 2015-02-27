@@ -274,8 +274,14 @@ NSString * USER_ID_KEY=@"userIdKey";
     NSDictionary *item = [recommendedMerchants objectAtIndex:index-1];
     MerchantListItem *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     [cell.profileImage sd_setImageWithURL:[NSURL URLWithString:[item valueForKey:@"profilePicture"]] placeholderImage:[UIImage imageNamed:@"loading"]];
-    [cell.descriptionLabel setText:[item valueForKey:@"bio"]];
     [cell.userName setText:[item valueForKey:@"username"]];
+
+    NSString * bioText = [item valueForKey:@"bio"];
+    if([item valueForKey:@"website"] != nil){
+        bioText = [NSString stringWithFormat:@"%@\n%@",bioText,[item valueForKey:@"website"]];
+    }
+    
+    [cell.descriptionLabel setText:bioText];
     return cell;
     
 }
