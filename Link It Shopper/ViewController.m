@@ -330,7 +330,7 @@ NSString * USER_ID_KEY=@"userIdKey";
     if(recommendedMerchants!=nil){
         int index = indexPath.row - 1;
         NSString *username = recommendedMerchants[index][@"username"];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://instagram.com/%@",username]]];
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"instagram://user?username=%@",username]]];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
     }
 }
