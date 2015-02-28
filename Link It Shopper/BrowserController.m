@@ -26,7 +26,6 @@
 @synthesize instaImageUrl = _instaImageUrl;
 @synthesize toolBar = _toolBar;
 @synthesize progressBar = _progressBar;
-@synthesize imageId = _imageId;
 
 - (void)viewDidLoad {
     [super viewDidLoad];

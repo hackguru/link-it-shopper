@@ -257,7 +257,12 @@ NSString * USER_ID_KEY=@"userIdKey";
             [cell.productLinkImage setBackgroundImage:[UIImage imageNamed:@"notLinked"] forState:UIControlStateNormal];
         }
         
-        [cell.descriptionLabel setText:[item valueForKey:@"productDescription"]];
+        NSString *caption = [item valueForKey:@"caption"];
+        if (!caption || [caption isEqual:[NSNull null]]){
+            caption = @"";
+        }
+        
+        [cell.descriptionLabel setText:caption];
         
         NSDictionary *userInfo = [item valueForKey:@"owner"];
         [cell.userName setText:[userInfo valueForKey:@"username"]];
@@ -302,9 +307,9 @@ NSString * USER_ID_KEY=@"userIdKey";
         CGRect screenRect = [[UIScreen mainScreen] bounds];
         CGFloat screenWidth = screenRect.size.width;
         if(indexPath.row == 0){
-            return screenWidth/2 + 49;
+            return screenWidth/2 + 55;
         }
-        return screenWidth/2 + 54;
+        return screenWidth/2 + 60;
     }
     return 100;
 }
@@ -326,8 +331,12 @@ NSString * USER_ID_KEY=@"userIdKey";
         [cell setLayoutMargins:UIEdgeInsetsZero];
     }
     
-    if(items.count > 0 && indexPath.row == 0){
-        ((ListItem *)cell).topMargin.constant = 0;
+    if(items.count > 0){
+        if(indexPath.row == 0){
+            ((ListItem *)cell).topMargin.constant = 0;
+        }else{
+            ((ListItem *)cell).topMargin.constant = 5;
+        }
     }
 }
 
@@ -390,7 +399,6 @@ NSString * USER_ID_KEY=@"userIdKey";
         NSString *imageId = [item[@"media"] valueForKey:@"_id"];
         NSString *instaImageUrl = [[[item[@"media"] valueForKey:@"images"] valueForKey:@"low_resolution"] valueForKey:@"url"];
         [browser setLink:link];
-        [browser setImageId:imageId];
         [browser setInstaImageUrl:instaImageUrl];
         
         //sending analyitics
@@ -412,6 +420,12 @@ NSString * USER_ID_KEY=@"userIdKey";
         
     }
 }
+
+- (IBAction)gotToInsta:(id)sender
+{
+    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"instagram://app"]];
+}
+
 
 - (IBAction)logout:(id)sender{
     

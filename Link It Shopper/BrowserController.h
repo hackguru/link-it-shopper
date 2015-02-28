@@ -21,8 +21,6 @@
 
 @property (strong, nonatomic) NSString *link;
 
-@property (strong, nonatomic) NSString *imageId;
-
 @property (strong, nonatomic) NSString *instaImageUrl;
 
 @end
