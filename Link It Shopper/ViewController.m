@@ -31,6 +31,7 @@ NSString * USER_ID_KEY=@"userIdKey";
     NSURLConnection *currentConnection;
     NSMutableData *apiReturnData;
     BOOL _draggingView;
+    BOOL _loadingMoreInBottom;
     NSString *toBeshownPostIdFromRemoteNotification;
     CGFloat headerHeight, footerHeight;
 }
@@ -42,6 +43,7 @@ NSString * USER_ID_KEY=@"userIdKey";
     self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"linkit"]];
     [super viewDidLoad];
     _draggingView = NO;
+    _loadingMoreInBottom = NO;
     headerHeight = self.tableView.sectionHeaderHeight;
     footerHeight = self.tableView.sectionFooterHeight;
     self.tableView.sectionHeaderHeight = 0;
@@ -73,7 +75,10 @@ NSString * USER_ID_KEY=@"userIdKey";
         //Pull Up
     } else if (scrollView.contentOffset.y + scrollView.frame.size.height >= scrollView.contentSize.height - (pullingDetectFrom*8)) {
         // we are at the end
-        [self getMoreForBottomOfList];
+        if(!_loadingMoreInBottom && items && items.count){
+            _loadingMoreInBottom = YES;
+            [self getMoreForBottomOfList];
+        }
     }
 }
 
@@ -369,6 +374,9 @@ NSString * USER_ID_KEY=@"userIdKey";
     currentConnection = nil;
     self.tableView.sectionHeaderHeight = 0;
     self.tableView.sectionFooterHeight = 0;
+    if(_loadingMoreInBottom){
+        _loadingMoreInBottom = NO;
+    }
 }
 
 - (void)connectionDidFinishLoading:(NSURLConnection *)connection {
@@ -382,6 +390,9 @@ NSString * USER_ID_KEY=@"userIdKey";
         [self updateItemsWith:[returnedDict objectForKey:@"results"]];
         self.tableView.sectionHeaderHeight = 0;
         self.tableView.sectionFooterHeight = 0;
+        if(_loadingMoreInBottom){
+            _loadingMoreInBottom = NO;
+        }
         [self.tableView reloadData];
     }
 }
