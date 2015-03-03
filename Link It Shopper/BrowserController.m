@@ -9,6 +9,7 @@
 #import "BrowserController.h"
 #import <QuartzCore/QuartzCore.h>
 #import <SDWebImage/UIImageView+WebCache.h>
+#import <SDWebImage/UIButton+WebCache.h>
 #import "AppDelegate.h"
 
 @interface BrowserController ()
@@ -24,8 +25,10 @@
 @synthesize webView = _webView;
 @synthesize link = _link;
 @synthesize instaImageUrl = _instaImageUrl;
+@synthesize instaImageUrlBig = _instaImageUrlBig;
 @synthesize toolBar = _toolBar;
 @synthesize progressBar = _progressBar;
+@synthesize instaImageBig = _instaImageBig;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -35,11 +38,15 @@
     } else  {
         [self loadRequestFromString: @"http://www.google.com"];
     }
-    UIImageView *instaImage = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 35,35)];
-    [instaImage sd_setImageWithURL:[NSURL URLWithString:self.instaImageUrl] placeholderImage:[UIImage imageNamed:@"loading"]];
-    UIBarButtonItem *instaImageButton =[[UIBarButtonItem alloc] initWithCustomView:instaImage];
+    UIButton *instaImageButton = [[UIButton alloc] initWithFrame:CGRectMake(0, 0, 35,35)];
+    [instaImageButton sd_setImageWithURL:[NSURL URLWithString:self.instaImageUrl] forState:UIControlStateNormal placeholderImage:[UIImage imageNamed:@"loading"]];
+    [self.instaImageBig sd_setImageWithURL:[NSURL URLWithString:self.instaImageUrlBig] placeholderImage:[UIImage imageNamed:@"loading"]];
+    [instaImageButton addTarget:self action:@selector(instaImageTouched) forControlEvents:UIControlEventTouchDown];
+    [instaImageButton addTarget:self action:@selector(instaImageUntouched) forControlEvents:UIControlEventTouchUpInside];
+    [instaImageButton addTarget:self action:@selector(instaImageUntouched) forControlEvents:UIControlEventTouchUpOutside];
+    UIBarButtonItem *instaImageBarButton =[[UIBarButtonItem alloc] initWithCustomView:instaImageButton];
     NSMutableArray *currentItems = self.toolBar.items.mutableCopy;
-    [currentItems insertObject:instaImageButton atIndex:0];
+    [currentItems insertObject:instaImageBarButton atIndex:0];
     [self.toolBar setItems:currentItems];
     self.progressBar.hidden = YES;
 }
@@ -134,6 +141,14 @@ shouldStartLoadWithRequest:(NSURLRequest *)request
         [[NSUserDefaults standardUserDefaults] removeObserver:self forKeyPath:kMostRecentNotificationForPostKey];
     }
     @catch (NSException * __unused exception) {}
+}
+
+- (void)instaImageTouched{
+    self.instaImageBig.hidden = NO;
+}
+
+- (void)instaImageUntouched{
+    self.instaImageBig.hidden = YES;
 }
 
 @end

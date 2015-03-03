@@ -167,7 +167,6 @@ NSString * USER_ID_KEY=@"userIdKey";
         NSString *endDate =  nil;
         if(items.count){
             startDate = [items.lastObject valueForKey:@"likedDate"];
-            endDate = [items.firstObject valueForKey:@"likedDate"];
         }
         [self loadContentForUser:currentUserId from:startDate to:endDate];
         
@@ -412,9 +411,11 @@ NSString * USER_ID_KEY=@"userIdKey";
         }
         NSString *link = [item[@"media"] valueForKey:@"linkToProduct"];
         NSString *imageId = [item[@"media"] valueForKey:@"_id"];
-        NSString *instaImageUrl = [[[item[@"media"] valueForKey:@"images"] valueForKey:@"low_resolution"] valueForKey:@"url"];
+        NSString *instaImageUrl = [[[item[@"media"] valueForKey:@"images"] valueForKey:@"thumbnail"] valueForKey:@"url"];
+        NSString *instaImageUrlBig = [[[item[@"media"] valueForKey:@"images"] valueForKey:@"standard_resolution"] valueForKey:@"url"];
         [browser setLink:link];
         [browser setInstaImageUrl:instaImageUrl];
+        [browser setInstaImageUrlBig:instaImageUrlBig];
         
         //sending analyitics
         NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];

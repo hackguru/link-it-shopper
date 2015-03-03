@@ -310,10 +310,17 @@
                                     <constraint firstAttribute="height" constant="2" id="4cg-kz-bsY"/>
                                 </constraints>
                             </progressView>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="MOE-gG-EXZ">
+                                <rect key="frame" x="180" y="20" width="240" height="572"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="lightTextColor"/>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="nN4-24-kfr" firstAttribute="leading" secondItem="qH0-ce-cX7" secondAttribute="leading" id="0Qa-Ug-5Of"/>
+                            <constraint firstItem="MOE-gG-EXZ" firstAttribute="top" secondItem="h19-mW-5tZ" secondAttribute="bottom" id="54X-mu-lSq"/>
+                            <constraint firstAttribute="trailing" secondItem="MOE-gG-EXZ" secondAttribute="trailing" id="6T2-ll-VOx"/>
+                            <constraint firstItem="Mlb-JS-zS1" firstAttribute="top" secondItem="MOE-gG-EXZ" secondAttribute="bottom" id="7Sz-3C-cIy"/>
                             <constraint firstItem="ldo-O6-NMC" firstAttribute="leading" secondItem="qH0-ce-cX7" secondAttribute="leading" id="9w7-x1-8Zw"/>
                             <constraint firstItem="Mlb-JS-zS1" firstAttribute="top" secondItem="nN4-24-kfr" secondAttribute="bottom" id="ASt-yH-2ur"/>
                             <constraint firstAttribute="trailing" secondItem="hs2-VH-PB4" secondAttribute="trailing" id="Ad4-KV-Yf7"/>
@@ -322,10 +329,12 @@
                             <constraint firstAttribute="trailing" secondItem="nN4-24-kfr" secondAttribute="trailing" id="em2-h4-m3h"/>
                             <constraint firstItem="nN4-24-kfr" firstAttribute="top" secondItem="ldo-O6-NMC" secondAttribute="bottom" id="g3h-qO-oAJ"/>
                             <constraint firstItem="hs2-VH-PB4" firstAttribute="leading" secondItem="qH0-ce-cX7" secondAttribute="leading" id="j5w-xl-5Gx"/>
+                            <constraint firstItem="MOE-gG-EXZ" firstAttribute="leading" secondItem="qH0-ce-cX7" secondAttribute="leading" id="qar-8s-3ib"/>
                             <constraint firstItem="ldo-O6-NMC" firstAttribute="top" secondItem="hs2-VH-PB4" secondAttribute="bottom" id="rbm-94-p8w"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="instaImageBig" destination="MOE-gG-EXZ" id="Gx4-Vl-Yld"/>
                         <outlet property="progressBar" destination="hs2-VH-PB4" id="Uhf-PC-Obv"/>
                         <outlet property="toolBar" destination="nN4-24-kfr" id="E7o-cP-V1h"/>
                         <outlet property="webView" destination="ldo-O6-NMC" id="TWB-G2-r8V"/>
