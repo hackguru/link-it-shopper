@@ -14,6 +14,7 @@
 #import "SignupController.h"
 #import "AppDelegate.h"
 #import "MerchantListItem.h"
+#import "SWRevealViewController.h"
 
 #define kLikedItemsUrl @"http://api.linkmy.photos/users/%@/likedMedias"
 #define kRecommendedMerchantsUrl @"http://api.linkmy.photos/users/%@/recommendedMerchants"
@@ -34,13 +35,32 @@ NSString * USER_ID_KEY=@"userIdKey";
     BOOL _loadingMoreInBottom;
     NSString *toBeshownPostIdFromRemoteNotification;
     CGFloat headerHeight, footerHeight;
+    BOOL showingFeaturedMerchants;
 }
+
+@synthesize sidebarButton = _sidebarButton;
+@synthesize needToLogout = _needToLogout;
+
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+
+    // This will remove extra separators from tableview
+    self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
+
+    self.navigationController.navigationBar.titleTextAttributes = [NSDictionary dictionaryWithObjectsAndKeys:[UIColor colorWithRed:33.0/255.0f  green:145.0/255.0f blue:193.0/255.0f alpha:1.0], NSForegroundColorAttributeName, nil];
+    
+    SWRevealViewController *revealViewController = self.revealViewController;
+    if ( revealViewController )
+    {
+        [self.sidebarButton setTarget: self.revealViewController];
+        [self.sidebarButton setAction: @selector( revealToggle: )];
+        [self.view addGestureRecognizer:self.revealViewController.panGestureRecognizer];
+    }
+
+    
     // Do any additional setup after loading the view, typically from a nib.
     [self.tableView setRowHeight: UITableViewAutomaticDimension];
-    self.navigationItem.titleView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"linkit"]];
     [super viewDidLoad];
     _draggingView = NO;
     _loadingMoreInBottom = NO;
@@ -51,14 +71,24 @@ NSString * USER_ID_KEY=@"userIdKey";
 }
 
 - (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    if (showingFeaturedMerchants){
+        return;
+    }
     _draggingView = YES;
 }
 
 - (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    if (showingFeaturedMerchants){
+        return;
+    }
     _draggingView = NO;
 }
 
 - (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    if (showingFeaturedMerchants){
+        return;
+    }
+    
     NSInteger pullingDetectFrom = 50;
     if (scrollView.contentOffset.y < -pullingDetectFrom) {
         //Pull Down
@@ -87,6 +117,7 @@ NSString * USER_ID_KEY=@"userIdKey";
     NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     NSString * newPost = [defaults stringForKey:kMostRecentNotificationForPostKey.copy];
     if(newPost != nil){
+        showingFeaturedMerchants = NO;
         toBeshownPostIdFromRemoteNotification = newPost;
         [defaults setObject:nil forKey:kMostRecentNotificationForPostKey];
         [defaults synchronize];
@@ -156,9 +187,27 @@ NSString * USER_ID_KEY=@"userIdKey";
 }
 
 - (void)viewWillAppear:(BOOL)animated{
-    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
     
+    showingFeaturedMerchants = NO;
+    
+    NSUserDefaults *defaults = [NSUserDefaults standardUserDefaults];
+    toBeshownPostIdFromRemoteNotification = [defaults stringForKey:kMostRecentNotificationForPostKey];    
     NSString *currentUserId = [defaults stringForKey:USER_ID_KEY];
+    
+    if (toBeshownPostIdFromRemoteNotification == nil){
+        [defaults addObserver:self
+                   forKeyPath:kMostRecentNotificationForPostKey
+                      options:NSKeyValueObservingOptionNew
+                      context:NULL];
+    }
+    
+    if([self.title isEqualToString:@"Featured Merchants"] && toBeshownPostIdFromRemoteNotification == nil){
+        items = nil;
+        [self populateRecommendedMerchants];
+        showingFeaturedMerchants = YES;
+        return;
+    }
+    
     
     if(currentUserId == nil) {
         [self performSegueWithIdentifier:@"segueToSignupPage" sender:self];
@@ -170,19 +219,17 @@ NSString * USER_ID_KEY=@"userIdKey";
         }
         [self loadContentForUser:currentUserId from:startDate to:endDate];
         
-        toBeshownPostIdFromRemoteNotification = [defaults stringForKey:kMostRecentNotificationForPostKey];
         if (toBeshownPostIdFromRemoteNotification != nil) {
             [defaults setObject:nil forKey:kMostRecentNotificationForPostKey];
             [defaults synchronize];
             [self updateTopOfList];
-        } else {
-            [defaults addObserver:self
-                        forKeyPath:kMostRecentNotificationForPostKey
-                           options:NSKeyValueObservingOptionNew
-                           context:NULL];
-            
         }
     }
+    
+    if (self.needToLogout){
+        [self logout];
+    }
+
 }
 
 - (void) observeValueForKeyPath:(NSString *)keyPath ofObject:(id)object
@@ -203,6 +250,10 @@ NSString * USER_ID_KEY=@"userIdKey";
 }
 
 - (void) loadContentForUser:(NSString *) userId from:(NSString *) startDate to:(NSString *) endDate {
+    
+    if(![self.title isEqualToString:@"My Likes"]){
+        [self setTitle:@"My Likes"];
+    }
     
     NSURL *restURL = [NSURL URLWithString:[NSString stringWithFormat:kLikedItemsUrl, userId]];
     if(startDate != nil){
@@ -241,10 +292,13 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    if(items.count>0){
-        return items.count;
-    } else if (recommendedMerchants.count>0){
-        return recommendedMerchants.count + 1;
+    if(!showingFeaturedMerchants){
+        if(items.count>0){
+            return items.count;
+        }
+        return 1;
+    } else {
+        return recommendedMerchants.count;
     }
     return 1;
 }
@@ -280,11 +334,13 @@ NSString * USER_ID_KEY=@"userIdKey";
         
         return cell;
     }
-    if(index == 0) {
-        return [tableView dequeueReusableCellWithIdentifier:@"emptyTable" forIndexPath:indexPath];
+    if(!showingFeaturedMerchants){
+        if(index == 0) {
+            return [tableView dequeueReusableCellWithIdentifier:@"emptyTable" forIndexPath:indexPath];
+        }
     }
     NSString *identifier = @"recommended-merchant";
-    NSDictionary *item = [recommendedMerchants objectAtIndex:index-1];
+    NSDictionary *item = [recommendedMerchants objectAtIndex:index];
     MerchantListItem *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
     [cell.profileImage sd_setImageWithURL:[NSURL URLWithString:[item valueForKey:@"profilePicture"]] placeholderImage:[UIImage imageNamed:@"loading"]];
     [cell.userName setText:[item valueForKey:@"username"]];
@@ -351,7 +407,7 @@ NSString * USER_ID_KEY=@"userIdKey";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(recommendedMerchants!=nil){
-        int index = indexPath.row - 1;
+        int index = indexPath.row;
         NSString *username = recommendedMerchants[index][@"username"];
         [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"instagram://user?username=%@",username]]];
         [tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -443,7 +499,7 @@ NSString * USER_ID_KEY=@"userIdKey";
 }
 
 
-- (IBAction)logout:(id)sender{
+- (void)logout{
     
     UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Logout"
                                                     message:@"Are you sure you want to logout?"
@@ -488,6 +544,7 @@ NSString * USER_ID_KEY=@"userIdKey";
             }];
             
             items = nil;
+            self.needToLogout = NO;
             
             break;
     }
@@ -527,9 +584,7 @@ NSString * USER_ID_KEY=@"userIdKey";
     if(items == nil){
         items = newItems.mutableCopy;
         self.tableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
-        if((items == nil || items.count == 0)){
-            [self populateRecommendedMerchants];
-        }
+        [self newItemsAddedToTheTop:items.firstObject];
         return;
     }
     for(int i=0; i<newItems.count; i++){

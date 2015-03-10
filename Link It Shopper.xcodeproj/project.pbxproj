@@ -22,6 +22,8 @@
 		2D8053181A971BA90073374F /* MerchantListItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2D8053171A971BA90073374F /* MerchantListItem.m */; };
 		2D80531B1A994A220073374F /* MediaPlayer.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2D80531A1A994A220073374F /* MediaPlayer.framework */; };
 		2D80531E1A997DB30073374F /* finalLinkitTeaser-lowres.mp4 in Resources */ = {isa = PBXBuildFile; fileRef = 2D80531D1A997DB30073374F /* finalLinkitTeaser-lowres.mp4 */; };
+		2DB263B31AAE4C38004108DC /* SWRevealViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB263B21AAE4C38004108DC /* SWRevealViewController.m */; };
+		2DB263B61AAE53FD004108DC /* SidebarTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2DB263B51AAE53FD004108DC /* SidebarTableViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -60,6 +62,10 @@
 		2D8053191A971BDB0073374F /* MerchantListItem.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MerchantListItem.h; sourceTree = "<group>"; };
 		2D80531A1A994A220073374F /* MediaPlayer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MediaPlayer.framework; path = System/Library/Frameworks/MediaPlayer.framework; sourceTree = SDKROOT; };
 		2D80531D1A997DB30073374F /* finalLinkitTeaser-lowres.mp4 */ = {isa = PBXFileReference; lastKnownFileType = file; path = "finalLinkitTeaser-lowres.mp4"; sourceTree = "<group>"; };
+		2DB263B11AAE4C38004108DC /* SWRevealViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SWRevealViewController.h; sourceTree = "<group>"; };
+		2DB263B21AAE4C38004108DC /* SWRevealViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SWRevealViewController.m; sourceTree = "<group>"; };
+		2DB263B41AAE53FD004108DC /* SidebarTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SidebarTableViewController.h; sourceTree = "<group>"; };
+		2DB263B51AAE53FD004108DC /* SidebarTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SidebarTableViewController.m; sourceTree = "<group>"; };
 		4555219178D677A0A2CC6DD5 /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
 		49956122C19EBF7FDC2A4EBF /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		51EB95ED9BDFFBB97AF0633C /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
@@ -108,6 +114,9 @@
 		2D8052E31A91E6CE0073374F /* Link It Shopper */ = {
 			isa = PBXGroup;
 			children = (
+				2DB263B41AAE53FD004108DC /* SidebarTableViewController.h */,
+				2DB263B51AAE53FD004108DC /* SidebarTableViewController.m */,
+				2DB263B01AAE4BCD004108DC /* SWRevealViewController */,
 				2D80531C1A994FA20073374F /* otherResources */,
 				2D80530E1A91EAB10073374F /* BrowserController.h */,
 				2D80530F1A91EAB10073374F /* BrowserController.m */,
@@ -171,6 +180,15 @@
 				2D80531D1A997DB30073374F /* finalLinkitTeaser-lowres.mp4 */,
 			);
 			name = otherResources;
+			sourceTree = "<group>";
+		};
+		2DB263B01AAE4BCD004108DC /* SWRevealViewController */ = {
+			isa = PBXGroup;
+			children = (
+				2DB263B11AAE4C38004108DC /* SWRevealViewController.h */,
+				2DB263B21AAE4C38004108DC /* SWRevealViewController.m */,
+			);
+			name = SWRevealViewController;
 			sourceTree = "<group>";
 		};
 		5A6934C741B12371886633AE /* Pods */ = {
@@ -328,11 +346,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2DB263B61AAE53FD004108DC /* SidebarTableViewController.m in Sources */,
 				2D8052ED1A91E6CE0073374F /* ViewController.m in Sources */,
 				2D8053141A91EAB10073374F /* BrowserController.m in Sources */,
 				2D8053181A971BA90073374F /* MerchantListItem.m in Sources */,
 				2D8053161A91EAB10073374F /* SignupController.m in Sources */,
 				2D8053151A91EAB10073374F /* ListItem.m in Sources */,
+				2DB263B31AAE4C38004108DC /* SWRevealViewController.m in Sources */,
 				2D8052EA1A91E6CE0073374F /* AppDelegate.m in Sources */,
 				2D80530D1A91EA9D0073374F /* NSData+Conversion.m in Sources */,
 				2D8052E71A91E6CE0073374F /* main.m in Sources */,

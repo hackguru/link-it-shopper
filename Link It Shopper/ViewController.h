@@ -11,6 +11,8 @@
 extern const NSString *USER_ID_KEY;
 
 @interface ViewController : UITableViewController <NSURLConnectionDelegate>
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *sidebarButton;
+@property (nonatomic, assign) BOOL needToLogout;
 
 @end
 
