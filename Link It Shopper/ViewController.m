@@ -17,6 +17,8 @@
 #import "SWRevealViewController.h"
 
 #define kLikedItemsUrl @"http://api.linkmy.photos/users/%@/likedMedias"
+#define kMyMerchantsItemsUrl @"http://api.linkmy.photos/users/%@/followsMedia"
+#define kPostedItemsUrl @"http://api.linkmy.photos/users/%@/matchedMedia"
 #define kRecommendedMerchantsUrl @"http://api.linkmy.photos/users/%@/recommendedMerchants"
 #define kOpenedLinksUrl @"http://api.linkmy.photos/users/%@/opened/%@"
 NSString * USER_ID_KEY=@"userIdKey";
@@ -36,6 +38,8 @@ NSString * USER_ID_KEY=@"userIdKey";
     NSString *toBeshownPostIdFromRemoteNotification;
     CGFloat headerHeight, footerHeight;
     BOOL showingFeaturedMerchants;
+    NSString *currentFeedname;
+    NSString *currentFeedUserId;
 }
 
 @synthesize sidebarButton = _sidebarButton;
@@ -44,6 +48,10 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    currentFeedUserId = nil;
+    if (currentFeedname == nil){
+        currentFeedname = @"My Likes";
+    }
 
     // This will remove extra separators from tableview
     self.tableView.tableFooterView = [[UIView alloc] initWithFrame:CGRectZero];
@@ -118,6 +126,10 @@ NSString * USER_ID_KEY=@"userIdKey";
     NSString * newPost = [defaults stringForKey:kMostRecentNotificationForPostKey.copy];
     if(newPost != nil){
         showingFeaturedMerchants = NO;
+        if(![currentFeedname isEqualToString:@"My Likes"]){
+            currentFeedname = @"My Likes";
+            items = nil;
+        }
         toBeshownPostIdFromRemoteNotification = newPost;
         [defaults setObject:nil forKey:kMostRecentNotificationForPostKey];
         [defaults synchronize];
@@ -134,7 +146,7 @@ NSString * USER_ID_KEY=@"userIdKey";
         NSString *startDate =  nil;
         NSString *endDate =  nil;
         if(items.count){
-            startDate = [items.firstObject valueForKey:@"likedDate"];
+            startDate = [currentFeedname isEqualToString:@"My Likes"] ? [items.firstObject valueForKey:@"likedDate"] : [items.firstObject valueForKey:@"created"];
         }
         [self loadContentForUser:currentUserId from:startDate to:endDate];
         self.tableView.sectionHeaderHeight = headerHeight;
@@ -151,7 +163,7 @@ NSString * USER_ID_KEY=@"userIdKey";
         NSString *startDate =  nil;
         NSString *endDate =  nil;
         if(items.count){
-            endDate = [items.lastObject valueForKey:@"likedDate"];
+            endDate = [currentFeedname isEqualToString:@"My Likes"] ? [items.lastObject valueForKey:@"likedDate"] : [items.lastObject valueForKey:@"created"];
         }
         [self loadContentForUser:currentUserId from:startDate to:endDate];
         self.tableView.sectionFooterHeight = footerHeight;
@@ -208,21 +220,29 @@ NSString * USER_ID_KEY=@"userIdKey";
         return;
     }
     
+    if([self.title isEqualToString:@"My Merchants"]){
+        currentFeedname = @"My Merchants";
+    }
+    
     
     if(currentUserId == nil) {
         [self performSegueWithIdentifier:@"segueToSignupPage" sender:self];
     } else {
-        NSString *startDate =  nil;
-        NSString *endDate =  nil;
-        if(items.count){
-            startDate = [items.lastObject valueForKey:@"likedDate"];
-        }
-        [self loadContentForUser:currentUserId from:startDate to:endDate];
-        
         if (toBeshownPostIdFromRemoteNotification != nil) {
             [defaults setObject:nil forKey:kMostRecentNotificationForPostKey];
             [defaults synchronize];
+            if(![currentFeedname isEqualToString:@"My Likes"]){
+                currentFeedname = @"My Likes";
+                items = nil;
+            }
             [self updateTopOfList];
+        } else {
+            NSString *startDate =  nil;
+            NSString *endDate =  nil;
+            if(items.count){
+                startDate = [currentFeedname isEqualToString:@"My Likes"] ? [items.lastObject valueForKey:@"likedDate"] : [items.lastObject valueForKey:@"created"];
+            }
+            [self loadContentForUser:currentUserId from:startDate to:endDate];
         }
     }
     
@@ -251,11 +271,17 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 - (void) loadContentForUser:(NSString *) userId from:(NSString *) startDate to:(NSString *) endDate {
     
-    if(![self.title isEqualToString:@"My Likes"]){
-        [self setTitle:@"My Likes"];
+    if(currentFeedUserId == nil && ![currentFeedname isEqualToString:@"My Merchants"]){
+        currentFeedname = @"My Likes";
     }
     
-    NSURL *restURL = [NSURL URLWithString:[NSString stringWithFormat:kLikedItemsUrl, userId]];
+    if(![self.title isEqualToString:currentFeedname]){
+        [self setTitle:currentFeedname];
+    }
+    
+    NSString *url = [currentFeedname isEqualToString:@"My Likes"] ? [NSString stringWithFormat:kLikedItemsUrl, userId] : [currentFeedname isEqualToString:@"My Merchants"] ? [NSString stringWithFormat:kMyMerchantsItemsUrl, userId] : [NSString stringWithFormat:kPostedItemsUrl, currentFeedUserId];
+    
+    NSURL *restURL = [NSURL URLWithString:url];
     if(startDate != nil){
         restURL = [self URLByAppendingQueryStringKey:@"startDate" andValue:startDate forUrl:restURL];
     }
@@ -307,7 +333,7 @@ NSString * USER_ID_KEY=@"userIdKey";
     NSInteger index = indexPath.row;
     if (items.count>0) {
         NSString *identifier = @"liked-item";
-        NSDictionary *item = [[items objectAtIndex:index] valueForKey:@"media"];
+        NSDictionary *item = [currentFeedname isEqualToString:@"My Likes"] ? [[items objectAtIndex:index] valueForKey:@"media"] : [items objectAtIndex:index] ;
         ListItem *cell = [tableView dequeueReusableCellWithIdentifier:identifier forIndexPath:indexPath];
         [cell.instaImage sd_setBackgroundImageWithURL:[NSURL URLWithString:[[[item valueForKey:@"images"] valueForKey:@"low_resolution"] valueForKey:@"url"]] forState:UIControlStateNormal
                                      placeholderImage:[UIImage imageNamed:@"loading"]];
@@ -407,10 +433,15 @@ NSString * USER_ID_KEY=@"userIdKey";
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(recommendedMerchants!=nil){
+        showingFeaturedMerchants = NO;
         int index = indexPath.row;
         NSString *username = recommendedMerchants[index][@"username"];
-        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"instagram://user?username=%@",username]]];
-        [tableView deselectRowAtIndexPath:indexPath animated:YES];
+        NSString *userId = recommendedMerchants[index][@"_id"];
+        currentFeedname = username;
+        currentFeedUserId = userId;
+        items = nil;
+        [self loadContentForUser:currentFeedUserId from:nil to:nil];
+        [tableView scrollsToTop];
     }
 }
 
@@ -465,10 +496,11 @@ NSString * USER_ID_KEY=@"userIdKey";
             item = [items objectAtIndex:[self getItemIndexById:toBeshownPostIdFromRemoteNotification]];
             toBeshownPostIdFromRemoteNotification = nil;
         }
-        NSString *link = [item[@"media"] valueForKey:@"linkToProduct"];
-        NSString *imageId = [item[@"media"] valueForKey:@"_id"];
-        NSString *instaImageUrl = [[[item[@"media"] valueForKey:@"images"] valueForKey:@"thumbnail"] valueForKey:@"url"];
-        NSString *instaImageUrlBig = [[[item[@"media"] valueForKey:@"images"] valueForKey:@"standard_resolution"] valueForKey:@"url"];
+        NSDictionary *currentMedia = [currentFeedname isEqualToString:@"My Likes"] ? item[@"media"] : item;
+        NSString *link = [currentMedia valueForKey:@"linkToProduct"];
+        NSString *imageId = [currentMedia valueForKey:@"_id"];
+        NSString *instaImageUrl = [[[currentMedia valueForKey:@"images"] valueForKey:@"thumbnail"] valueForKey:@"url"];
+        NSString *instaImageUrlBig = [[[currentMedia valueForKey:@"images"] valueForKey:@"standard_resolution"] valueForKey:@"url"];
         [browser setLink:link];
         [browser setInstaImageUrl:instaImageUrl];
         [browser setInstaImageUrlBig:instaImageUrlBig];
@@ -495,7 +527,11 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 - (IBAction)gotToInsta:(id)sender
 {
-    [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"instagram://app"]];
+    if(currentFeedUserId != nil){
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:[NSString stringWithFormat:@"instagram://user?username=%@",currentFeedname]]];
+    } else {
+        [[UIApplication sharedApplication] openURL:[NSURL URLWithString:@"instagram://app"]];
+    }
 }
 
 
@@ -573,7 +609,8 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 - (int)getItemIndexById:(NSString *)id{
     for(int i=0; i<items.count; i++){
-        if([[items[i][@"media"] valueForKey:@"_id"] isEqualToString:id]){
+        NSDictionary *currentMedia = [currentFeedname isEqualToString:@"My Likes"] ? items[i][@"media"] : items[i];
+        if([[currentMedia valueForKey:@"_id"] isEqualToString:id]){
             return i;
         }
     }
@@ -588,7 +625,8 @@ NSString * USER_ID_KEY=@"userIdKey";
         return;
     }
     for(int i=0; i<newItems.count; i++){
-        int currentIndex = [self getItemIndexById:[newItems[i][@"media"] valueForKey:@"_id"]];
+        NSDictionary *newMedia = [currentFeedname isEqualToString:@"My Likes"] ? newItems[i][@"media"] : newItems[i];
+        int currentIndex = [self getItemIndexById:[newMedia valueForKey:@"_id"]];
         if(currentIndex >= 0){
             [items replaceObjectAtIndex:currentIndex withObject:newItems[i]];
         } else {
@@ -599,7 +637,8 @@ NSString * USER_ID_KEY=@"userIdKey";
 
 - (void)insertIntoItemsSorted:(NSDictionary *)toAdd{
     for(int i=0; i<items.count; i++){
-        if([items[i][@"likedDate"] caseInsensitiveCompare:toAdd[@"likedDate"]] == NSOrderedAscending){
+        NSString *dateKey = [currentFeedname isEqualToString:@"My Likes"] ? @"likedDate" : @"created";
+        if([items[i][dateKey] caseInsensitiveCompare:toAdd[dateKey]] == NSOrderedAscending){
             [items insertObject:toAdd atIndex:i];
             if (i==0){
                 [self newItemsAddedToTheTop:toAdd];
@@ -611,7 +650,7 @@ NSString * USER_ID_KEY=@"userIdKey";
 }
 
 -(void)newItemsAddedToTheTop:(NSDictionary *) newItem{
-    if([newItem[@"media"][@"_id"] isEqualToString:toBeshownPostIdFromRemoteNotification]){
+    if([currentFeedname isEqualToString:@"My Likes"] && [newItem[@"media"][@"_id"] isEqualToString:toBeshownPostIdFromRemoteNotification]){
         //TODO Move to the browser
         [self.tableView scrollsToTop];
         [self performSegueWithIdentifier:@"showProductLink" sender:self];

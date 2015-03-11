@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6254" systemVersion="14C109" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="rRQ-Dw-vNr">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1510" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="rRQ-Dw-vNr">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6247"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -314,7 +314,39 @@
                                     <segue destination="pTu-Uh-xmV" kind="custom" customClass="SWRevealViewControllerSeguePushController" id="nGQ-ck-qBN"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="menu_2" id="CZn-ZE-Ws0">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="menu_2" id="a5r-Vl-bth">
+                                <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
+                                <autoresizingMask key="autoresizingMask"/>
+                                <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="a5r-Vl-bth" id="KZ7-E6-mM7">
+                                    <autoresizingMask key="autoresizingMask"/>
+                                    <subviews>
+                                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" image="myMerchants" translatesAutoresizingMaskIntoConstraints="NO" id="CUo-Ye-lgk">
+                                            <rect key="frame" x="8" y="0.0" width="53" height="43"/>
+                                            <constraints>
+                                                <constraint firstAttribute="height" constant="32" id="6NN-h7-6Fc"/>
+                                                <constraint firstAttribute="width" constant="32" id="aU5-IQ-wEJ"/>
+                                            </constraints>
+                                        </imageView>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="My Merchants" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="8HO-ci-mQk">
+                                            <rect key="frame" x="69" y="11" width="523" height="21"/>
+                                            <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                            <color key="textColor" red="0.12941176469999999" green="0.56862745100000001" blue="0.75686274509999996" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <nil key="highlightedColor"/>
+                                        </label>
+                                    </subviews>
+                                    <constraints>
+                                        <constraint firstItem="8HO-ci-mQk" firstAttribute="leading" secondItem="CUo-Ye-lgk" secondAttribute="trailing" constant="8" id="OCl-8a-3I9"/>
+                                        <constraint firstItem="CUo-Ye-lgk" firstAttribute="leading" secondItem="KZ7-E6-mM7" secondAttribute="leadingMargin" constant="10" id="bE1-bV-GkK"/>
+                                        <constraint firstItem="8HO-ci-mQk" firstAttribute="trailing" secondItem="KZ7-E6-mM7" secondAttribute="trailingMargin" id="hhP-rq-f48"/>
+                                        <constraint firstAttribute="centerY" secondItem="CUo-Ye-lgk" secondAttribute="centerY" id="syk-Az-tlH"/>
+                                        <constraint firstAttribute="centerY" secondItem="8HO-ci-mQk" secondAttribute="centerY" id="uCa-fk-sgv"/>
+                                    </constraints>
+                                </tableViewCellContentView>
+                                <connections>
+                                    <segue destination="pTu-Uh-xmV" kind="custom" customClass="SWRevealViewControllerSeguePushController" id="kc0-dw-GKB"/>
+                                </connections>
+                            </tableViewCell>
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="menu_3" id="CZn-ZE-Ws0">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="CZn-ZE-Ws0" id="3Hh-rk-H7F">
@@ -346,7 +378,7 @@
                                     <segue destination="pTu-Uh-xmV" kind="custom" customClass="SWRevealViewControllerSeguePushController" id="NQh-HF-6Sx"/>
                                 </connections>
                             </tableViewCell>
-                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="menu_3" id="MlK-Qb-wII">
+                            <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="menu_4" id="MlK-Qb-wII">
                                 <rect key="frame" x="0.0" y="0.0" width="600" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="MlK-Qb-wII" id="neX-6D-Mb6">
@@ -591,11 +623,12 @@
         <image name="linkit" width="64" height="30"/>
         <image name="logout" width="64" height="64"/>
         <image name="menu-icon" width="22" height="22"/>
+        <image name="myMerchants" width="64" height="64"/>
         <image name="openExternal" width="35" height="35"/>
         <image name="videoCover" width="800" height="400"/>
     </resources>
     <inferredMetricsTieBreakers>
-        <segue reference="NT5-zq-ox0"/>
+        <segue reference="nGQ-ck-qBN"/>
     </inferredMetricsTieBreakers>
     <color key="tintColor" red="0.12941176470588237" green="0.56862745098039214" blue="0.75686274509803919" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
 </document>

@@ -36,7 +36,7 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
     // Return the number of rows in the section.
-    return 4;
+    return 5;
 }
 
 
@@ -55,11 +55,13 @@
     ViewController *nextController = [navController childViewControllers].firstObject;
     NSString *title = @"My Likes";
     if (indexPath.row == 2){
+        title = @"My Merchants";
+    } else if (indexPath.row == 3){
         title = @"Featured Merchants";
     }
     [nextController setTitle: title];
     
-    if(indexPath.row == 3){
+    if(indexPath.row == 4){
         [nextController setNeedToLogout:YES];
     }
 }
